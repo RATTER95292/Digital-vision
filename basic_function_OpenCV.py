@@ -2,45 +2,50 @@ import cv2
 
 image = cv2.imread("C:/Users/Ratter/Downloads/cc.jpg") # открыть изображение
 
-#посмотреть изображение
+'''
+Сохранить изображение
+cv2.imwrite("./экспорт/путь.расширение", image)
+'''
+
+#Посмотреть изображение
 def viewImage(image, name_of_window):
-    cv2.namedWindow(name_of_window, cv2.WINDOW_NORMAL)
-    cv2.imshow(name_of_window, image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    cv2.namedWindow(name_of_window, cv2.WINDOW_NORMAL) # Название окна
+    cv2.imshow(name_of_window, image) # Создать окно с изображением
+    cv2.waitKey(0) # Ждем нажатие кнопки на клавиатуре
+    cv2.destroyAllWindows() # Убираем это окно
 
-viewImage(image,"ШЛЕА")
+viewImage(image,"Original image")
 
-image1 = image[10:500, 500:2000]
-viewImage(image1,"ШЛЕА")
+image_croped = image[10:500, 500:2000] # Обрезать изображение
+viewImage(image_croped,"Croped image")
 
-scale_percent = 20 # Процент от изначального размера
-width = int(image.shape[1] * scale_percent / 100)
-height = int(image.shape[0] * scale_percent / 100)
+scale_percent = 40 # Процент от изначального размера
+width = int(image.shape[1] * scale_percent / 100) # Расчитываем ширину
+height = int(image.shape[0] * scale_percent / 100)# Расчитываем высоту
 dim = (width, height)
-image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-viewImage(image, "После изменения размера на 20 %")
+image_size = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)#
+viewImage(image_size, "resize image")
 
-(h, w, d) = image.shape
-center = (w // 2, h // 2)
-M = cv2.getRotationMatrix2D(center, 180, 1.0)
+(h, w, d) = image.shape # узнает высоту и ширину изображению
+center = (w // 2, h // 2) # Находим центер изображения
+M = cv2.getRotationMatrix2D(center, 180, 1.0) # повернуть изображение на 190 градусов
 rotated = cv2.warpAffine(image, M, (w, h))
-viewImage(rotated, "Пёсик после поворота на 180 градусов")
+viewImage(rotated, "Rotaded image")
 
 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 ret, threshold_image = cv2.threshold(image, 127, 255, 0)
-viewImage(gray_image, "Пёсик в градациях серого")
-viewImage(threshold_image, "Чёрно-белый пёсик")
+viewImage(gray_image, "m")
+viewImage(threshold_image, "Black-white")
 
-blurred = cv2.GaussianBlur(image, (51, 51), 0)
-viewImage(blurred, "Размытый пёсик")
-
-output = image.copy()
-cv2.rectangle(output, (100, 100), (100, 400), (0, 255, 255), 10)
-viewImage(output, "Обводим прямоугольником лицо пёсика")
+blurred = cv2.GaussianBlur(image, (51, 51), 0) # Делаем размытие по Гауссу
+viewImage(blurred, "Blur imige")
 
 output = image.copy()
-cv2.putText(output, "We <3 Dogs", (100, 100),cv2.FONT_HERSHEY_SIMPLEX, 15, (30, 105, 210), 40)
-viewImage(output, "Изображение с текстом")
+x = ((w//2) - 50, (h//2) - 50)
+y = ((w//2) + 50, (h//2) + 50)
+cv2.rectangle(output, x, y, (0, 255, 255), 3) # Рисуем прямоугольник
+viewImage(output, "Imige")
 
-cv2.imwrite("./экспорт/путь.расширение", image)
+output = image.copy()
+cv2.putText(output, "Shlepa", x,cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 105, 210), 3) # Написать текст
+viewImage(output, "Imige with text")
